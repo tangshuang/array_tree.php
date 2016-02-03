@@ -1,3 +1,5 @@
+<?php
+
 function array_tree(&$array,$pid = 'pid',$sort = false,$sort_type = 'desc') {
   // 子元素计数器
   function array_children_count($array,$pid) {
