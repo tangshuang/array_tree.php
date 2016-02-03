@@ -44,7 +44,7 @@ function array_tree(&$array,$pid = 'pid',$sort = false,$sort_type = 'desc') {
     }
     $counter = array_children_count($array,$pid);
   }
-  // 获取最高级别的元素
+  // 排序后返回
   array_sort($tree,$sort,$sort_type);
   $array = $tree;
   return $tree;
