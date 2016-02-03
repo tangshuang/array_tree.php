@@ -1,6 +1,12 @@
 <?php
 
-function array_tree(&$array,$pid = 'pid',$sort = false,$sort_type = 'desc') {
+/**
+ * 构建层级（树状）数组
+ * @param array $array 要进行处理的一维数组，经过该函数处理后，该数组自动转为树状数组
+ * @param string $pid 父级ID的字段名
+ * @return array|bool
+ */
+function array_tree(&$array,$pid = 'pid') {
   // 子元素计数器
   function array_children_count($array,$pid) {
     $counter = array();
@@ -28,6 +34,11 @@ function array_tree(&$array,$pid = 'pid',$sort = false,$sort_type = 'desc') {
   // 如果顶级元素为0个，那么直接返回false
   if($counter[0] == 0) 
     return false;
+  // 过滤原始数组，把其键名和id字段等同（保险起见，一定要操作这一步）
+  foreach($array as $i => $item) {
+    unset($array[$i]);
+    $array[$item['id']] = $item;
+  }
   // 准备顶级元素
   $tree = array();
   // 位移
@@ -44,35 +55,7 @@ function array_tree(&$array,$pid = 'pid',$sort = false,$sort_type = 'desc') {
     }
     $counter = array_children_count($array,$pid);
   }
-  // 排序后返回
-  array_sort($tree,$sort,$sort_type);
+
   $array = $tree;
   return $tree;
-}
-
-// 排序
-function array_sort(&$array,$field = false,$type = 'desc') { // 默认为数值越大越靠前
-  if($field == false)
-    return $array;
-  $key_value = $new_array = array();
-  foreach($array as $k => $v) {
-    $key_value[$k] = $v[$field];
-  }
-  if($type == 'asc') {
-    asort($key_value);
-  }
-  else {
-    arsort($key_value);
-  }
-  reset($key_value);
-  foreach($key_value as $k => $v) {
-    $new_array[$k] = $array[$k];
-    // 如果有children
-    if(isset($new_array[$k]['children'])) {
-      $new_array[$k]['children'] = array_sort($new_array[$k]['children']);
-    }
-  }
-  $new_array = array_values($new_array);
-  $array = $new_array;
-  return $new_array;
 }
