@@ -35,10 +35,13 @@ function array_tree(&$array,$pid = 'pid') {
   if($counter[0] == 0) 
     return false;
   // 过滤原始数组，把其键名和id字段等同（保险起见，一定要操作这一步）
+  $temp = array();
   foreach($array as $i => $item) {
     unset($array[$i]);
-    $array[$item['id']] = $item;
+    $temp[$item['id']] = $item;
   }
+  $array = $temp;
+  unset($temp);
   // 准备顶级元素
   $tree = array();
   // 位移
